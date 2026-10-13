@@ -164,6 +164,91 @@ export function dfaToSerializable(dfa: DFA) {
   }
 }
 
+export type DfaParseResult =
+  | { ok: true; dfa: DFA }
+  | { ok: false; error: string }
+
+/**
+ * Parse JSON produced by `dfaToSerializable` (or anything shape-compatible)
+ * back into a DFA. Missing transitions are left blank so the usual
+ * validation / "complete with dead state" flow applies.
+ */
+export function parseDfaJson(text: string): DfaParseResult {
+  let data: unknown
+  try {
+    data = JSON.parse(text)
+  } catch {
+    return { ok: false, error: 'The file is not valid JSON.' }
+  }
+
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    return { ok: false, error: 'Expected a JSON object describing a DFA.' }
+  }
+  const obj = data as Record<string, unknown>
+
+  const states = stringArray(obj.states)
+  if (states === null) {
+    return { ok: false, error: '"states" must be a non-empty array of strings.' }
+  }
+  const alphabet = stringArray(obj.alphabet)
+  if (alphabet === null) {
+    return { ok: false, error: '"alphabet" must be a non-empty array of strings.' }
+  }
+
+  if (typeof obj.start !== 'string' || obj.start === '') {
+    return { ok: false, error: '"start" must be a non-empty state name.' }
+  }
+
+  const accepting = obj.accepting === undefined ? [] : stringArray(obj.accepting, true)
+  if (accepting === null) {
+    return { ok: false, error: '"accepting" must be an array of strings.' }
+  }
+
+  const rawTransitions = obj.transitions
+  if (
+    rawTransitions !== undefined &&
+    (typeof rawTransitions !== 'object' || rawTransitions === null || Array.isArray(rawTransitions))
+  ) {
+    return { ok: false, error: '"transitions" must be an object keyed by state.' }
+  }
+  const transitionsIn = (rawTransitions ?? {}) as Record<string, unknown>
+
+  const transitions: DFA['transitions'] = {}
+  for (const state of states) {
+    const row = transitionsIn[state]
+    transitions[state] = {}
+    if (row !== undefined && (typeof row !== 'object' || row === null || Array.isArray(row))) {
+      return { ok: false, error: `Transitions for state "${state}" must be an object.` }
+    }
+    const rowIn = (row ?? {}) as Record<string, unknown>
+    for (const symbol of alphabet) {
+      const target = rowIn[symbol]
+      if (target === undefined || target === null || target === '') {
+        transitions[state][symbol] = ''
+      } else if (typeof target !== 'string') {
+        return {
+          ok: false,
+          error: `Transition δ(${state}, ${symbol}) must be a string state name.`,
+        }
+      } else {
+        transitions[state][symbol] = target
+      }
+    }
+  }
+
+  return {
+    ok: true,
+    dfa: { states, alphabet, start: obj.start, accepting, transitions },
+  }
+}
+
+function stringArray(value: unknown, allowEmpty = false): string[] | null {
+  if (!Array.isArray(value)) return null
+  if (!allowEmpty && value.length === 0) return null
+  if (!value.every((v) => typeof v === 'string')) return null
+  return value as string[]
+}
+
 /** Simulate the DFA on an input sequence. Returns false on a missing transition. */
 export function accepts(dfa: DFA, input: Symbol[]): boolean {
   let current = dfa.start
