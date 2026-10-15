@@ -27,17 +27,30 @@ export function TopBar({
   onToggleRight,
 }: TopBarProps) {
   return (
-    <nav className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-surface/80 px-4 py-2.5 backdrop-blur-sm">
-      <button
-        type="button"
-        onClick={onToggleLeft}
-        aria-label="Toggle definitions panel"
-        aria-pressed={leftOpen}
-        title="Toggle definitions panel (Ctrl+B)"
-        className={`${toggleButton} ${leftOpen ? '' : 'text-ink-faint'}`}
-      >
-        <PanelLeftIcon className="h-4 w-4" />
-      </button>
+    <nav className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-surface/80 px-3 py-2 backdrop-blur-sm sm:px-4 sm:py-2.5">
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={onToggleLeft}
+          aria-label="Toggle definitions panel"
+          aria-pressed={leftOpen}
+          title="Toggle definitions panel (Ctrl+B)"
+          className={`${toggleButton} ${leftOpen ? '' : 'text-ink-faint'}`}
+        >
+          <PanelLeftIcon className="h-4 w-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={onToggleRight}
+          aria-label="Toggle animation panel"
+          aria-pressed={rightOpen}
+          title="Toggle animation panel (Ctrl+Shift+B)"
+          className={`${toggleButton} ${rightOpen ? '' : 'text-ink-faint'}`}
+        >
+          <PanelRightIcon className="h-4 w-4" />
+        </button>
+      </div>
 
       <button
         type="button"
@@ -45,23 +58,12 @@ export function TopBar({
         className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface-1 px-3 py-1.5 text-sm font-medium text-ink-muted shadow-sm transition hover:border-line-strong hover:bg-elevated hover:text-ink"
       >
         <DownloadIcon className="h-4 w-4" />
-        Download
+        <span className="hidden sm:inline">Download</span>
       </button>
 
-      <div className="ml-auto min-w-0">
+      <div className="w-full min-w-0 sm:ml-auto sm:w-auto sm:flex-initial">
         <StepControls playback={playback} total={total} disabled={!canPlay} />
       </div>
-
-      <button
-        type="button"
-        onClick={onToggleRight}
-        aria-label="Toggle animation panel"
-        aria-pressed={rightOpen}
-        title="Toggle animation panel (Ctrl+Shift+B)"
-        className={`${toggleButton} ${rightOpen ? '' : 'text-ink-faint'}`}
-      >
-        <PanelRightIcon className="h-4 w-4" />
-      </button>
     </nav>
   )
 }

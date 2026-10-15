@@ -400,7 +400,7 @@ export function InteractiveGraph({
   return (
     <div
       ref={containerRef}
-      className={`canvas-grid relative h-full w-full touch-none select-none overflow-hidden ${cursorClass}`}
+      className={`canvas-grid absolute inset-0 touch-none select-none overflow-hidden ${cursorClass}`}
       style={{
         backgroundSize: `${GRID * transform.scale}px ${GRID * transform.scale}px`,
         backgroundPosition: `${transform.x}px ${transform.y}px`,
@@ -624,7 +624,7 @@ export function InteractiveGraph({
         >
           <MinusIcon className="h-4 w-4" />
         </button>
-        <span className="mono w-11 text-center text-[11px] tabular-nums text-ink-muted">
+        <span className="mono hidden w-11 text-center text-[11px] tabular-nums text-ink-muted sm:block">
           {Math.round(transform.scale * 100)}%
         </span>
         <button
@@ -635,7 +635,7 @@ export function InteractiveGraph({
         >
           <PlusIcon className="h-4 w-4" />
         </button>
-        <span className="mx-0.5 h-5 w-px bg-line" />
+        <span className="mx-0.5 hidden h-5 w-px bg-line sm:block" />
         <button
           type="button"
           onClick={fitView}
@@ -653,7 +653,7 @@ export function InteractiveGraph({
           }}
           aria-label="Reset layout"
           title="Reset layout"
-          className="grid h-7 w-7 place-items-center rounded-md text-ink-muted transition hover:bg-elevated hover:text-ink"
+          className="hidden h-7 w-7 place-items-center rounded-md text-ink-muted transition hover:bg-elevated hover:text-ink sm:grid"
         >
           <ResetIcon className="h-4 w-4" />
         </button>

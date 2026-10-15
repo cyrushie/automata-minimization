@@ -47,12 +47,12 @@ export function GraphPanel({
   const simulator = useSimulator(activeDfa)
 
   const tabClass = (active: boolean) =>
-    `rounded-md px-3 py-1 text-xs font-medium transition ${
+    `rounded-md px-2 py-1 text-xs font-medium transition sm:px-3 ${
       active ? 'bg-accent text-white shadow-sm' : 'text-ink-muted hover:bg-elevated hover:text-ink'
     }`
 
   return (
-    <div className="relative h-full w-full">
+    <div className="absolute inset-0">
       <InteractiveGraph
         dfa={activeDfa}
         ariaLabel={view === 'minimized' ? 'Minimized state diagram' : 'Original state diagram'}
@@ -64,7 +64,7 @@ export function GraphPanel({
         pulseKey={simulator.cursor}
       />
 
-      <div className="absolute left-3 top-3 flex items-center gap-0.5 rounded-lg border border-line bg-surface-2/90 p-0.5 shadow-lg backdrop-blur">
+      <div className="absolute left-3 top-3 z-10 flex items-center gap-0.5 rounded-lg border border-line bg-surface-2/90 p-0.5 shadow-lg backdrop-blur">
         <button type="button" onClick={() => setView('original')} className={tabClass(view === 'original')}>
           Original
         </button>
@@ -79,11 +79,13 @@ export function GraphPanel({
         </button>
       </div>
 
-      <span className="pointer-events-none absolute bottom-3 left-3 hidden text-[11px] text-ink-faint lg:block">
-        Space+drag pan · Ctrl+scroll zoom · Shift+1 fit
-      </span>
+      <div className="pointer-events-none absolute left-3 top-16 z-10 flex flex-col gap-2 lg:bottom-3 lg:left-3 lg:top-auto lg:z-auto">
+        <span className="hidden text-[11px] text-ink-faint lg:block">
+          Space+drag pan · Ctrl+scroll zoom · Shift+1 fit
+        </span>
+      </div>
 
-      <div className="pointer-events-none absolute bottom-3 left-1/2 w-[min(620px,92%)] -translate-x-1/2">
+      <div className="pointer-events-none absolute bottom-2 left-1/2 z-10 w-[min(620px,92%)] -translate-x-1/2 lg:bottom-3">
         <InputSimulator dfa={activeDfa} simulator={simulator} />
       </div>
     </div>

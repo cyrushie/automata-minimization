@@ -14,7 +14,7 @@ export function StepControls({ playback, total, disabled = false }: StepControls
   const { index, playing, atEnd, atStart } = playback
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
       <input
         type="range"
         min={0}
@@ -23,14 +23,14 @@ export function StepControls({ playback, total, disabled = false }: StepControls
         onChange={(event) => playback.setIndex(Number(event.target.value))}
         disabled={disabled}
         aria-label="Step"
-        className="step-range w-32 sm:w-44"
+        className="step-range min-w-0 flex-1 sm:w-44 sm:flex-initial"
       />
 
-      <span className="mono w-11 text-center text-xs tabular-nums text-ink-faint">
+      <span className="mono w-11 shrink-0 text-center text-xs tabular-nums text-ink-faint">
         {total === 0 ? 0 : index + 1}/{total}
       </span>
 
-      <div className="flex items-center gap-0.5 rounded-lg border border-line bg-surface-1 p-1 shadow-sm">
+      <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-line bg-surface-1 p-1 shadow-sm">
         <button
           type="button"
           className={iconButton}

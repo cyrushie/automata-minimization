@@ -94,10 +94,10 @@ export default function App() {
     <div className="flex min-h-screen flex-col bg-surface text-ink lg:h-screen lg:flex-row lg:overflow-hidden">
       {leftOpen && (
         <aside
-          className="flex w-full shrink-0 flex-col border-b border-line bg-surface-2 lg:border-b-0 lg:border-r"
+          className="order-last flex w-full shrink-0 flex-col border-b border-line bg-surface-2 lg:order-none lg:max-h-screen lg:border-b-0 lg:border-r"
           style={isDesktop ? { width: leftWidth } : undefined}
         >
-          <div className="flex shrink-0 items-center gap-3 border-b border-line px-4 py-3.5">
+          <div className="flex shrink-0 items-center gap-3 border-b border-line px-3 py-3 sm:px-4 sm:py-3.5">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent text-white shadow-lg shadow-accent/25">
               <LogoIcon className="h-5 w-5" />
             </span>
@@ -107,7 +107,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          <div className="max-h-[35vh] min-h-0 flex-1 overflow-y-auto p-3 sm:p-4 lg:max-h-none">
             <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-faint">
                 Definition
@@ -142,7 +142,7 @@ export default function App() {
         />
       )}
 
-      <section className="flex min-h-0 min-w-0 flex-1 flex-col">
+      <section className="order-first flex min-h-[65vh] min-w-0 flex-1 flex-col lg:order-none lg:min-h-0">
         <TopBar
           playback={playback}
           total={result?.steps.length ?? 0}
@@ -180,14 +180,14 @@ export default function App() {
 
       {rightOpen && (
         <aside
-          className="flex w-full shrink-0 flex-col border-t border-line bg-surface-2 lg:border-t-0 lg:border-l"
+          className="flex w-full shrink-0 flex-col border-t border-line bg-surface-2 lg:max-h-screen lg:border-t-0 lg:border-l"
           style={isDesktop ? { width: rightWidth } : undefined}
         >
-          <div className="shrink-0 border-b border-line px-4 py-3.5">
+          <div className="shrink-0 border-b border-line px-3 py-3 sm:px-4 sm:py-3.5">
             <h2 className="text-sm font-semibold text-ink">Partition refinement</h2>
             <p className="text-xs text-ink-faint">Blocks accumulate as states are split</p>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          <div className="max-h-[30vh] min-h-0 flex-1 overflow-y-auto p-3 sm:p-4 lg:max-h-none">
             {result && activeStep ? (
               <PartitionFlow steps={result.steps} current={playback.index} dfa={dfa} />
             ) : (

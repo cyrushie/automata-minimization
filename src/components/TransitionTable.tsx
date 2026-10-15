@@ -10,8 +10,8 @@ export function TransitionTable() {
     <div>
       <SymbolEditor />
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
+      <div className="-mx-4 overflow-x-auto px-4">
+        <table className="w-full min-w-max border-collapse text-sm">
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-ink-faint">
               <th className="border-b border-line px-2 py-2">State</th>
