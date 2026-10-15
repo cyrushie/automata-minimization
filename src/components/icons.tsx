@@ -11,6 +11,24 @@ const strokeProps = {
   strokeLinejoin: 'round',
 } as const
 
+export function PanelLeftIcon(props: IconProps) {
+  return (
+    <svg {...strokeProps} {...props} aria-hidden="true">
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M9 4v16" />
+    </svg>
+  )
+}
+
+export function PanelRightIcon(props: IconProps) {
+  return (
+    <svg {...strokeProps} {...props} aria-hidden="true">
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M15 4v16" />
+    </svg>
+  )
+}
+
 export function PlayIcon(props: IconProps) {
   return (
     <svg {...strokeProps} {...props} aria-hidden="true">

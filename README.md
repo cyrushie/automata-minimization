@@ -6,6 +6,10 @@ Obsidian-style canvas graph, and input-string simulation.
 
 ## Features
 
+- **DFA library** — a dropdown listing **your saved DFAs** (stored in
+  `localStorage`) above the built-in **samples**. Start a blank automaton with
+  **New**, save the current one with **Save**, delete saved entries inline, or
+  bring one in via **Paste JSON** / **Import JSON** (file).
 - **Transition table editor** — add/remove states and alphabet symbols, edit
   names, mark the start state, toggle accepting states, and set every
   transition with dropdowns.
@@ -21,10 +25,11 @@ Obsidian-style canvas graph, and input-string simulation.
   - **Original | Minimized** toggle switches the canvas between the input DFA
     and the minimal DFA; the minimized view recolors nodes by block.
 - **Input simulation** — type a string and step or auto-play it through the
-  DFA. The current state is highlighted, the transition being taken is
-  underlined, and the verdict (accepted / rejected / unknown symbol) is shown
-  live. Multi-character symbols are matched greedily, and a run halts at the
-  first missing transition.
+  DFA. Each step pulses the transition just taken and the destination state
+  (so repeated self-loops stay visible), and a symbol strip highlights the
+  position in the input. The verdict (accepted / rejected / unknown symbol) is
+  shown live. Multi-character symbols are matched greedily, and a run halts at
+  the first missing transition.
 - **Unreachable-state removal** — the preprocessing step is shown explicitly.
 - **Step-by-step refinement** — play, pause, scrub, or step through each round.
   Every round shows the current partition blocks, the transition "signature"
@@ -53,6 +58,8 @@ Shortcuts are ignored while typing in an input/textarea/select.
 | `Shift` + drag empty canvas | Marquee-select multiple states                |
 | `Shift` + click/drag a node | Add to / remove from the selection            |
 | `←` / `→` (on a divider)    | Resize the panel by 16px                      |
+| `Ctrl`/`Cmd` + `B`          | Toggle the definitions panel                  |
+| `Ctrl`/`Cmd` + `Shift` + `B`| Toggle the animation panel                    |
 | `Shift` + `←` / `→`         | Resize the panel by 48px                      |
 | Double-click a divider      | Reset that panel to its default width         |
 
@@ -91,6 +98,8 @@ src/
     InputSimulator.tsx      Input-string simulation bar
     GraphPanel.tsx          Graph + Original/Minimized toggle + simulator
     Resizer.tsx             Draggable panel divider
+    SaveDfaDialog.tsx       Name prompt when saving a DFA
+    PasteJsonDialog.tsx     Paste-JSON import dialog
     PartitionFlow.tsx       Animated partition-refinement rows
     TopBar/StepControls.tsx Playback controls
     TransitionTable.tsx     Table editor
@@ -99,6 +108,7 @@ src/
   hooks/
     usePlayback.ts          Partition animation playback
     useSimulator.ts         Input simulation playback
+    useDfaLibrary.ts        localStorage-backed saved-DFA library
     usePersistentWidth.ts   localStorage-backed panel widths
     useMediaQuery.ts        Desktop breakpoint detection
   lib/

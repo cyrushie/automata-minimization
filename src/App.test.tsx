@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
@@ -82,5 +82,38 @@ describe('App', () => {
     fireEvent.keyDown(right, { key: 'ArrowLeft' })
     expect(right).toHaveAttribute('aria-valuenow', '416')
     expect(window.localStorage.getItem('panel.right')).toBe('416')
+  })
+
+  it('collapses and expands the side panels from the top bar', async () => {
+    const user = userEvent.setup()
+    renderApp()
+    const leftToggle = screen.getByRole('button', { name: /toggle definitions panel/i })
+    await user.click(leftToggle)
+    expect(leftToggle).toHaveAttribute('aria-pressed', 'false')
+    expect(
+      screen.queryByRole('separator', { name: /definitions panel/i }),
+    ).not.toBeInTheDocument()
+    await user.click(leftToggle)
+    expect(screen.getByRole('separator', { name: /definitions panel/i })).toBeInTheDocument()
+  })
+
+  it('toggles the panels with Ctrl+B and Ctrl+Shift+B', () => {
+    renderApp()
+    const leftToggle = screen.getByRole('button', { name: /toggle definitions panel/i })
+    const rightToggle = screen.getByRole('button', { name: /toggle animation panel/i })
+    fireEvent.keyDown(window, { code: 'KeyB', ctrlKey: true })
+    expect(leftToggle).toHaveAttribute('aria-pressed', 'false')
+    fireEvent.keyDown(window, { code: 'KeyB', ctrlKey: true, shiftKey: true })
+    expect(rightToggle).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('shows the input position as symbols are consumed', async () => {
+    const user = userEvent.setup()
+    renderApp()
+    const input = screen.getByRole('textbox', { name: /input string/i })
+    await user.type(input, 'ab')
+    const strip = screen.getByLabelText('Input position')
+    expect(within(strip).getByText('a')).toBeInTheDocument()
+    expect(within(strip).getByText('b')).toBeInTheDocument()
   })
 })

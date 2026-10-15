@@ -242,6 +242,39 @@ li.ring-2.step-enter {
   animation: drawer-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Transient per-step simulation cue. The element is keyed by the step cursor,
+   so it remounts and replays even when two consecutive steps share an edge. */
+.sim-edge-flow {
+  stroke-dasharray: 0.16 1;
+  animation: sim-flow 560ms ease-out forwards;
+}
+
+@keyframes sim-flow {
+  from {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: -1.16;
+    opacity: 0;
+  }
+}
+
+.sim-node-pulse {
+  animation: sim-node-pulse 560ms ease-out forwards;
+}
+
+@keyframes sim-node-pulse {
+  from {
+    opacity: 0.85;
+    stroke-width: 2;
+  }
+  to {
+    opacity: 0;
+    stroke-width: 10;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .step-enter,
   li.ring-2.step-enter,
@@ -252,6 +285,12 @@ li.ring-2.step-enter {
 
   .drawer-enter {
     animation: none;
+  }
+
+  .sim-edge-flow,
+  .sim-node-pulse {
+    animation: none;
+    opacity: 0;
   }
 
   .pf-token {
