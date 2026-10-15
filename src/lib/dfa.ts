@@ -14,6 +14,19 @@ export function emptyTransitions(
   return t
 }
 
+/** A blank starter automaton: two states, alphabet {a, b}, no accepting states. */
+export function createStarterDfa(): DFA {
+  const states = ['q0', 'q1']
+  const alphabet = ['a', 'b']
+  return {
+    states,
+    alphabet,
+    start: 'q0',
+    accepting: [],
+    transitions: emptyTransitions(states, alphabet, ''),
+  }
+}
+
 export function cloneDfa(dfa: DFA): DFA {
   const transitions: Record<StateId, Record<Symbol, StateId>> = {}
   for (const s of dfa.states) {

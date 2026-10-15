@@ -16,6 +16,11 @@ const MAX_SCALE = 2.5
 const GRID = 24
 const ACCENT = '#8875ff'
 
+export interface SimEdge {
+  from: StateId
+  to: StateId
+}
+
 interface Transform {
   scale: number
   x: number
@@ -36,7 +41,9 @@ interface InteractiveGraphProps {
   badgeForState?: (state: StateId) => string | undefined
   highlightStates?: Set<StateId>
   activeState?: StateId
-  takenEdge?: { from: StateId; to: StateId }
+  takenEdge?: SimEdge
+  /** Changes on every simulation step to replay the transient step cue. */
+  pulseKey?: number
 }
 
 type Interaction =
@@ -72,6 +79,7 @@ export function InteractiveGraph({
   highlightStates,
   activeState,
   takenEdge,
+  pulseKey,
 }: InteractiveGraphProps) {
   const layout = useMemo(() => layoutDfa(dfa), [dfa])
   const edges = useMemo(() => groupEdges(dfa), [dfa])
@@ -376,6 +384,16 @@ export function InteractiveGraph({
       }
     : null
 
+  /* Geometry of the transition taken by the current simulation step. */
+  const takenGeometry = (() => {
+    if (!takenEdge) return null
+    const edge = edges.find((e) => e.from === takenEdge.from && e.to === takenEdge.to)
+    if (!edge) return null
+    const a = posOf(edge.from)
+    const b = posOf(edge.to)
+    return edge.from === edge.to ? selfLoopPath(a, radius) : curvedPath(a, b, radius, edge.curve)
+  })()
+
   const cursorClass =
     mode === 'pan' ? 'canvas-cursor-panning' : spaceHeld ? 'canvas-cursor-pan' : ''
 
@@ -555,6 +573,33 @@ export function InteractiveGraph({
               </g>
             )
           })}
+
+          {/* Transient per-step cue: the keyed elements remount (and thus replay)
+              whenever `pulseKey` changes, so repeated edges still show motion. */}
+          {pulseKey !== undefined && takenGeometry && (
+            <path
+              key={`sim-edge-${pulseKey}`}
+              className="sim-edge-flow"
+              d={takenGeometry.path}
+              pathLength={1}
+              fill="none"
+              stroke={ACCENT}
+              strokeWidth={3}
+              strokeLinecap="round"
+            />
+          )}
+          {pulseKey !== undefined && activeState && (
+            <circle
+              key={`sim-node-${pulseKey}`}
+              className="sim-node-pulse"
+              cx={posOf(activeState).x}
+              cy={posOf(activeState).y}
+              r={radius + 4}
+              fill="none"
+              stroke={ACCENT}
+              strokeWidth={2}
+            />
+          )}
         </g>
 
         {marqueeScreen && (

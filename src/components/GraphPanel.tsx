@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { DFA, StateId } from '../types/dfa'
 import { colorForBlock, type BlockColor } from '../lib/palette'
 import { useSimulator } from '../hooks/useSimulator'
-import { InteractiveGraph } from './InteractiveGraph'
+import { InteractiveGraph, type SimEdge } from './InteractiveGraph'
 import { InputSimulator } from './InputSimulator'
 
 type View = 'original' | 'minimized'
@@ -60,7 +60,8 @@ export function GraphPanel({
         badgeForState={activeBadge}
         highlightStates={view === 'original' ? highlightStates : undefined}
         activeState={simulator.activeState}
-        takenEdge={simulator.takenStep}
+        takenEdge={simulator.takenStep ? (simulator.takenStep as SimEdge) : undefined}
+        pulseKey={simulator.cursor}
       />
 
       <div className="absolute left-3 top-3 flex items-center gap-0.5 rounded-lg border border-line bg-surface-2/90 p-0.5 shadow-lg backdrop-blur">
